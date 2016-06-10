@@ -1,11 +1,8 @@
 window.AppDispatcher = new Flux.Dispatcher();
+var $ = window.$;
 
 window.ListStore = {
-  items: [
-    {name: 'HTML', id: 1},
-    {name: 'CSS', id: 2},
-    {name: 'JavaScript', id: 3},
-  ]
+  items: []
 };
 
 MicroEvent.mixin(ListStore);
@@ -34,22 +31,28 @@ var Todo = React.createClass({
   },
 
   createNewItem: function(evt) {
+    var val = this.refs.addItemInput.value;
+    console.log('Val: ->: ' + val);
     window.AppDispatcher.dispatch({
       actionName: 'new-item',
-      newItem: {name: 'jQuery', id: 4}
+      newItem: {name: val, id: Date.now()}
     })
+
+    this.refs.addItemInput.value = '';
   },
 
   render: function() {
     var items = ListStore.items;
 
     var htmlList = items.map(function(listItem) {
-      return <li id="listItem.id">
+      return <li id={listItem.id}>
           {listItem.name}
+          <input type="checkbox" checked={listItem.completed}/>
         </li>
     });
 
     return <div>
+        <input ref="addItemInput" className="addItemInput" type="text" placeholder="What needs to be done?" />
         <ul>
           {htmlList}
         </ul>
