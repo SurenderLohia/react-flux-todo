@@ -10,6 +10,16 @@ window.ListStore = {
 
 MicroEvent.mixin(ListStore);
 
+window.AppDispatcher.register(function(payload) {
+  switch(payload.actionName) {
+    case 'new-item':
+      ListStore.items.push(payload.newItem);
+      ListStore.trigger('change');
+      break;
+  }
+});
+
+// React Component
 var Todo = React.createClass({
   componentDidMount: function() {
     ListStore.bind('change', this.listChanged);
@@ -47,15 +57,6 @@ var Todo = React.createClass({
       </div>
   }
 });
-
-window.AppDispatcher.register(function(payload) {
-  switch(payload.actionName) {
-    case 'new-item':
-      ListStore.items.push(payload.newItem);
-      ListStore.trigger('change');
-      break;
-  }
-})
 
 ReactDOM.render(
   <Todo/>,
